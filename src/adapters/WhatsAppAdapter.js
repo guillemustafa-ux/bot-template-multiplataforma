@@ -4,8 +4,8 @@ import makeWASocket, {
   DisconnectReason,
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
-import qrcode from 'qrcode-terminal';
 import { MessagingAdapter } from '../core/MessagingAdapter.js';
+import { setQR, markConnected } from '../services/qrServer.js';
 
 /**
  * Adaptador de WhatsApp basado en Baileys (multi-device).
@@ -40,11 +40,12 @@ export class WhatsAppAdapter extends MessagingAdapter {
 
   _onConnectionUpdate({ connection, lastDisconnect, qr }) {
     if (qr) {
-      this.logger.info('Escaneá este QR con WhatsApp > Dispositivos vinculados:');
-      qrcode.generate(qr, { small: true });
+      setQR(qr);
+      this.logger.info('QR de WhatsApp disponible: abrí la URL pública del servicio para escanearlo.');
     }
 
     if (connection === 'open') {
+      markConnected();
       this.logger.info('Adaptador de WhatsApp conectado');
       return;
     }

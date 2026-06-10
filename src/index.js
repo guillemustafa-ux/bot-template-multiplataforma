@@ -4,6 +4,7 @@ import { Router } from './core/router.js';
 import { registerHandlers } from './handlers/index.js';
 import { TelegramAdapter } from './adapters/TelegramAdapter.js';
 import { WhatsAppAdapter } from './adapters/WhatsAppAdapter.js';
+import { startQRServer } from './services/qrServer.js';
 
 /**
  * Punto de entrada. Construye el router con los handlers de negocio y
@@ -24,6 +25,8 @@ async function bootstrap() {
 
   if (config.platform === 'whatsapp' || config.platform === 'both') {
     adapters.push(new WhatsAppAdapter(config.whatsappAuthDir, logger));
+    // Servidor web para escanear el QR de WhatsApp (los logs no sirven en cloud).
+    startQRServer(config.port);
   }
 
   if (adapters.length === 0) {

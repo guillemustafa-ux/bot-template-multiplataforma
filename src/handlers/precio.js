@@ -2,9 +2,13 @@
  * /precio <símbolo> — consulta el precio spot en Binance y lo responde formateado.
  * Demuestra integración con una API externa pública (sin auth).
  *
+ * Usa data-api.binance.vision en vez de api.binance.com: este último tiene
+ * geo-bloqueo (HTTP 451) desde IPs de EE.UU. — donde corren Railway y otros
+ * clouds — mientras que el endpoint de datos público no lo tiene.
+ *
  * Ejemplos: /precio BTC   /precio eth   /precio SOLUSDT
  */
-const BINANCE_TICKER = 'https://api.binance.com/api/v3/ticker/price';
+const BINANCE_TICKER = 'https://data-api.binance.vision/api/v3/ticker/price';
 
 export async function precio({ msg, args, adapter }) {
   const simbolo = (args[0] || 'BTC').toUpperCase();

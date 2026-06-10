@@ -8,6 +8,8 @@ export const config = {
   platform: (process.env.PLATFORM || 'telegram').toLowerCase(),
   telegramToken: process.env.TELEGRAM_BOT_TOKEN,
   whatsappAuthDir: process.env.WHATSAPP_AUTH_DIR || './.wa-auth',
+  // Puerto del servidor web del QR de WhatsApp. Railway inyecta PORT.
+  port: Number(process.env.PORT) || 3000,
   logLevel: process.env.LOG_LEVEL || 'info',
 
   // IA conversacional (opcional). Si no hay key, el fallback degrada a un

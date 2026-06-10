@@ -68,8 +68,10 @@ El mensaje normalizado que reciben los handlers:
 
 ### WhatsApp
 1. Poné `PLATFORM=whatsapp`.
-2. Al arrancar, aparece un **QR en la terminal**: escaneálo desde
-   WhatsApp → *Dispositivos vinculados*.
+2. Al arrancar se levanta un **servidor web del QR** en `PORT` (default 3000).
+   Abrí `http://localhost:3000` y escaneá el QR desde
+   WhatsApp → *Dispositivos vinculados*. (El QR en logs queda demasiado grande
+   para escanear en cloud, por eso se sirve como imagen web.)
 3. La sesión se guarda en `WHATSAPP_AUTH_DIR` (por defecto `./.wa-auth`).
 
 > **Si ves `401` / `Bad MAC` / logout:** borrá la carpeta de la sesión
