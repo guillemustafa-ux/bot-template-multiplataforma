@@ -9,4 +9,9 @@ export const config = {
   telegramToken: process.env.TELEGRAM_BOT_TOKEN,
   whatsappAuthDir: process.env.WHATSAPP_AUTH_DIR || './.wa-auth',
   logLevel: process.env.LOG_LEVEL || 'info',
+
+  // IA conversacional (opcional). Si no hay key, el fallback degrada a un
+  // mensaje fijo de "no entendí".
+  groqApiKey: process.env.GROQ_API_KEY,
+  groqModel: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
 };

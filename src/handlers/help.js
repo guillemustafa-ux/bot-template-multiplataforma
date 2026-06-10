@@ -9,6 +9,8 @@ export async function help({ msg, adapter }) {
     '  /help o "ayuda"  — esta ayuda',
     '  /ping            — responde "pong" y la latencia',
     '  /precio <símbolo>— precio en vivo, ej: /precio ETH',
+    '',
+    '💬 Cualquier otro mensaje lo respondo con IA conversacional.',
   ].join('\n');
 
   await adapter.sendText(msg.from, texto);

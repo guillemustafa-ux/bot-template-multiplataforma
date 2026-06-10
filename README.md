@@ -11,6 +11,8 @@ escriben una sola vez y corren en cualquiera de las dos.
 - **Router de comandos** con soporte de alias y fallback.
 - **Comando crypto en vivo** (`/precio`) que consulta Binance — demuestra
   integración con API externa.
+- **IA conversacional** (Groq): cualquier mensaje libre se responde con un
+  modelo LLM. Opcional y degradable si no hay API key.
 - **Logging estructurado** con pino.
 - **Reconexión y manejo de errores** (especialmente la sesión de WhatsApp).
 - Config por `.env`, sin secretos en el código.
@@ -28,9 +30,12 @@ src/
 ├── adapters/
 │   ├── TelegramAdapter.js   # Implementación con Telegraf
 │   └── WhatsAppAdapter.js   # Implementación con Baileys (multi-device)
+├── services/
+│   └── groq.js              # IA conversacional (Groq, API estilo OpenAI)
 └── handlers/
     ├── index.js             # Registro de comandos
     ├── start.js  help.js  ping.js  precio.js
+    └── chat.js              # Fallback con IA para mensajes libres
 ```
 
 El mensaje normalizado que reciben los handlers:
@@ -73,6 +78,15 @@ El mensaje normalizado que reciben los handlers:
 ### Ambos a la vez
 Poné `PLATFORM=both` y completá el token de Telegram. Se levantan los dos
 adaptadores compartiendo los mismos handlers.
+
+### IA conversacional (opcional)
+
+Cualquier mensaje que no sea un comando se responde con un LLM vía
+[Groq](https://console.groq.com) (gratis y rápido, funciona desde Argentina).
+
+1. Sacá una API key gratis en console.groq.com.
+2. Cargala en `GROQ_API_KEY` en `.env`. Modelo por defecto: `llama-3.3-70b-versatile`.
+3. Sin key, el bot sigue funcionando: los mensajes libres reciben un "no entendí".
 
 ## ➕ Agregar un comando
 

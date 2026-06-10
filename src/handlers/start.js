@@ -10,6 +10,8 @@ export async function start({ msg, adapter }) {
     '  /ping    — verificar que estoy vivo',
     '  /precio  — precio de una cripto, ej: /precio BTC',
     '',
+    '💬 También podés escribirme cualquier cosa y te respondo con IA.',
+    '',
     `Estás hablando conmigo por: ${msg.platform}.`,
   ].join('\n');
 
