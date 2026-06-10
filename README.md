@@ -108,7 +108,7 @@ Cualquier mensaje que no sea un comando se responde con un LLM vía
 
 ## 📦 Stack
 
-Node.js ≥18 · Telegraf · @whiskeysockets/baileys · pino · dotenv
+Node.js ≥20 · Telegraf · @whiskeysockets/baileys · pino · dotenv
 
 ## Licencia
 
