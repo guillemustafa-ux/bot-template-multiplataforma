@@ -3,3 +3,4 @@ node_modules/
 .wa-auth/
 *.log
 .DS_Store
+.atl/
