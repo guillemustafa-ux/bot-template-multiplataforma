@@ -128,6 +128,11 @@ costo supera al beneficio.
    que la sesión persista entre deploys (si no, hay que reescanear el QR cada vez).
 4. Railway corre `npm start` automáticamente.
 
+> **Logs:** en producción el bot emite JSON estructurado (lo que Railway sabe
+> indexar y filtrar); en local sale coloreado y legible. La decisión se toma con
+> `NODE_ENV`. Si tu plataforma no lo setea —Railway a veces no lo hace— forzalo
+> con `NODE_ENV=production`, o controlalo directo con `LOG_PRETTY=true|false`.
+
 ## 📦 Stack
 
 Node.js ≥20 · Telegraf · @whiskeysockets/baileys · pino · dotenv

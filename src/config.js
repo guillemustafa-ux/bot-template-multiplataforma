@@ -8,6 +8,8 @@ import 'dotenv/config';
 // lo que rompe la autenticación de forma silenciosa. Se limpian siempre.
 const clean = (v) => (v || '').replace(/"/g, '') || undefined;
 
+const logPretty = clean(process.env.LOG_PRETTY);
+
 export const config = {
   platform: (process.env.PLATFORM || 'telegram').toLowerCase(),
   telegramToken: clean(process.env.TELEGRAM_BOT_TOKEN),
@@ -15,6 +17,10 @@ export const config = {
   // Puerto del servidor web del QR de WhatsApp. Railway inyecta PORT.
   port: Number(process.env.PORT) || 3000,
   logLevel: process.env.LOG_LEVEL || 'info',
+  // Logs coloreados con pino-pretty. Se apagan solos en producción, donde los
+  // agregadores necesitan JSON estructurado. Forzable con LOG_PRETTY=true|false
+  // (útil en clouds que no setean NODE_ENV).
+  logPretty: logPretty ? logPretty === 'true' : process.env.NODE_ENV !== 'production',
 
   // IA conversacional (opcional). Si no hay key, el fallback degrada a un
   // mensaje fijo de "no entendí".
