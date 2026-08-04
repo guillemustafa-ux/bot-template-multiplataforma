@@ -35,13 +35,19 @@ export class WhatsAppAdapter extends MessagingAdapter {
 
     this.sock.ev.on('creds.update', saveCreds);
     this.sock.ev.on('connection.update', (update) => this._onConnectionUpdate(update));
-    this.sock.ev.on('messages.upsert', (payload) => this._onMessages(payload));
+    this.sock.ev.on('messages.upsert', (payload) => {
+      // El emisor de Baileys no maneja rechazos: sin este catch, un sendMessage
+      // fallido dentro del handler tumbaría el proceso por unhandledRejection.
+      this._onMessages(payload).catch((err) =>
+        this.logger.error({ err }, 'Error procesando mensajes de WhatsApp'),
+      );
+    });
   }
 
   _onConnectionUpdate({ connection, lastDisconnect, qr }) {
     if (qr) {
       setQR(qr);
-      this.logger.info('QR de WhatsApp disponible: abrí la URL pública del servicio para escanearlo.');
+      this.logger.info('QR de WhatsApp disponible: abrí la ruta secreta publicada en los logs del servidor de QR.');
     }
 
     if (connection === 'open') {
@@ -60,8 +66,14 @@ export class WhatsAppAdapter extends MessagingAdapter {
           `Sesión cerrada (logout). Borrá la carpeta "${this.authDir}" y reiniciá para reescanear el QR.`,
         );
       } else {
-        this.logger.info('Reintentando conexión...');
-        this.start();
+        // Con delay para no martillar los servidores de WhatsApp si la falla
+        // persiste (reconexión inmediata en loop suele terminar en bloqueo).
+        this.logger.info('Reintentando conexión en 3s...');
+        setTimeout(() => {
+          this.start().catch((err) =>
+            this.logger.error({ err }, 'Reconexión de WhatsApp falló'),
+          );
+        }, 3000);
       }
     }
   }

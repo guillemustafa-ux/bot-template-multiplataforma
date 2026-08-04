@@ -48,7 +48,13 @@ export class Router {
       await handler({ msg, args, adapter });
     } catch (err) {
       this.logger.error({ err, from: msg.from, platform: msg.platform }, 'Error en handler');
-      await adapter.sendText(msg.from, '⚠️ Ocurrió un error procesando tu mensaje. Probá de nuevo.');
+      // Si el envío de recuperación también falla (usuario bloqueó el bot, JID
+      // inválido), no debe propagarse: tumbaría el proceso entero.
+      try {
+        await adapter.sendText(msg.from, '⚠️ Ocurrió un error procesando tu mensaje. Probá de nuevo.');
+      } catch (sendErr) {
+        this.logger.error({ err: sendErr, from: msg.from }, 'No se pudo notificar el error al usuario');
+      }
     }
   }
 }

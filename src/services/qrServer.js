@@ -1,4 +1,5 @@
 import { createServer } from 'http';
+import { randomBytes } from 'crypto';
 import QRCode from 'qrcode';
 import { logger } from '../core/logger.js';
 
@@ -33,9 +34,22 @@ const page = (body) =>
   `img{margin:24px auto;border-radius:12px;background:#fff;padding:16px}</style>` +
   `<meta http-equiv="refresh" content="20"></head><body>${body}</body></html>`;
 
+// Ruta secreta aleatoria: si el QR se sirviera en la raíz, cualquiera que
+// descubra la URL pública del servicio podría escanearlo y vincular su propio
+// dispositivo a la cuenta de WhatsApp. El path se imprime en los logs, que el
+// operador ya necesita mirar para conocer la URL del despliegue.
+const secretPath = `/qr-${randomBytes(16).toString('hex')}`;
+
 /** Arranca el servidor en el puerto dado (Railway inyecta PORT). */
 export function startQRServer(port) {
-  createServer(async (_req, res) => {
+  createServer(async (req, res) => {
+    if (req.url.split('?')[0] !== secretPath) {
+      // Respuesta neutra para health checks y curiosos: no revela la ruta del QR.
+      res.writeHead(req.url === '/' ? 200 : 404, { 'Content-Type': 'text/plain' });
+      res.end('OK');
+      return;
+    }
+
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
 
     if (connected) {
@@ -57,6 +71,6 @@ export function startQRServer(port) {
       ),
     );
   }).listen(port, () => {
-    logger.info({ port }, 'Servidor de QR de WhatsApp escuchando');
+    logger.info({ port, path: secretPath }, 'Servidor de QR de WhatsApp escuchando (abrí esa ruta para escanear)');
   });
 }

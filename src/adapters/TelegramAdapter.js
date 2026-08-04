@@ -9,6 +9,11 @@ export class TelegramAdapter extends MessagingAdapter {
   constructor(token, logger) {
     super('telegram', logger);
     this.bot = new Telegraf(token);
+    // Sin este catch, Telegraf relanza los errores de los middlewares (ej. 403
+    // por usuario que bloqueó el bot) como unhandledRejection y cae el proceso.
+    this.bot.catch((err, ctx) =>
+      this.logger.error({ err, chatId: ctx?.chat?.id }, 'Error no manejado en Telegraf'),
+    );
   }
 
   onMessage(handler) {
