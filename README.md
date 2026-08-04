@@ -26,6 +26,7 @@ src/
 ├── core/
 │   ├── MessagingAdapter.js  # Interfaz común a todas las plataformas
 │   ├── router.js            # Router de comandos (agnóstico de plataforma)
+│   ├── router.test.js       # Tests del router
 │   └── logger.js            # Logger pino
 ├── adapters/
 │   ├── TelegramAdapter.js   # Implementación con Telegraf
@@ -101,6 +102,22 @@ Cualquier mensaje que no sea un comando se responde con un LLM vía
    ```js
    router.command('micomando', miComando);
    ```
+
+## 🧪 Tests
+
+```bash
+npm test
+```
+
+Usa el runner nativo de Node (`node --test`), sin dependencias de testing. Toma
+todos los archivos `*.test.js`, así que para cubrir algo nuevo alcanza con crear
+su `.test.js` al lado del archivo.
+
+Hoy cubren el **router**, que es donde vive la lógica agnóstica de plataforma:
+resolución de comandos y alias, parseo de argumentos, fallback y —sobre todo—
+que un handler que falla nunca tumbe el proceso. Los adaptadores no están
+cubiertos: testearlos exige mockear los SDK de Telegraf y Baileys, y ahí el
+costo supera al beneficio.
 
 ## ☁️ Deploy en Railway
 
